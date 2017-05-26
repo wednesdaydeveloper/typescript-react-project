@@ -1,29 +1,28 @@
 import {Action} from 'redux';
-//import { createAction } from 'redux-actions';
-//import { handleActions } from 'redux-actions';
 
-export const INCREMENT_NAME = 'counter/increment';
+const INCREMENT_NAME = 'counter/increment';
+const DECREMENT_NAME = 'counter/decrement';
+
 type INCREMENT_TYPE = typeof INCREMENT_NAME;
-export const DECREMENT_NAME = 'counter/decrement';
 type DECREMENT_TYPE = typeof DECREMENT_NAME;
 
 export interface IncrementAction extends Action {
   type: INCREMENT_TYPE;
-  plusAmount: number;
+  payload: number;
 }
 export const incrementAmount = (amount: number): IncrementAction => ({
   type: INCREMENT_NAME,
-  plusAmount: amount
+  payload: amount
 });
 
 export interface DecrementAction extends Action {
   type: DECREMENT_TYPE;
-  minusAmount: number;
+  payload: number;
 }
 
 export const decrementAmount = (amount: number): DecrementAction => ({
   type: DECREMENT_NAME,
-  minusAmount: amount
+  payload: amount
 });
 
 export interface CounterState {
@@ -34,16 +33,16 @@ export type CounterActions = IncrementAction | DecrementAction;
 
 const initialState: CounterState = {num: 0};
 
-export default function reducer(state: CounterState = initialState, action: CounterActions): CounterState {
-  switch (action.type) {
-    case INCREMENT_NAME:
-      return {num: state.num + action.plusAmount};
-    case DECREMENT_NAME:
-      return {num: state.num - action.minusAmount};
-    default:
-      return state;
+import { handleActions } from 'redux-actions';
+
+export default handleActions<CounterState, CounterActions>({
+  INCREMENT_NAME: (state: CounterState, action: CounterActions) => {
+    return { num: state.num + action.payload };
+  },
+  DECREMENT_NAME: (state: CounterState, action: CounterActions) => {
+    return { num: state.num - action.payload };
   }
-}
+}, initialState);
 
 export class ActionDispatcher {
   constructor(private dispatch: (action: CounterActions) => void) {}
@@ -54,5 +53,16 @@ export class ActionDispatcher {
 
   public decrement(amount: number) {
     this.dispatch(decrementAmount(amount));
+  }
+  public incrementAsync(amount: number) {
+    setTimeout(() => {
+      this.dispatch(incrementAmount(amount));
+    }, 2000);
+  }
+
+  public decrementAsync(amount: number) {
+    setTimeout(() => {
+      this.dispatch(decrementAmount(amount));
+    }, 2000);
   }
 }

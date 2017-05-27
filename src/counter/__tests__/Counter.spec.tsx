@@ -8,18 +8,20 @@ describe('Counter', () => {
   it('rendering', () => {
     const props: StateProps & DispatchProps = {
         num: 123,
+        loadingCount: 0,
         onIncrement: (num: number) => {},
         onDecrement: (num: number) => {},
         onIncrementAsync: (num: number) => {},
         onDecrementAsync: (num: number) => {},
     };
     const wrapper = shallow(<Counter {...props} />)
-    expect(wrapper.find('p').at(0).prop('children')).toEqual(['score: ', 123])
+    expect(wrapper.find('p').at(0).prop('children')).toBe('score: 123')
   });
 
   it('click', () => {
     const props: StateProps & DispatchProps = {
         num: 123,
+        loadingCount: 0,
         onIncrement: (num: number) => {},
         onDecrement: (num: number) => {},
         onIncrementAsync: (num: number) => {},

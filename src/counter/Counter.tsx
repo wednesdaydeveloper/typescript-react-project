@@ -4,8 +4,6 @@ export interface StateProps {
   num: number;
 }
 
-export type CounterDispatchType = (num: number) => void;
-
 export interface DispatchProps {
     onIncrement: (num: number) => void;
     onDecrement: (num: number) => void;

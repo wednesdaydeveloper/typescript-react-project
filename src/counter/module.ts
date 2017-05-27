@@ -1,68 +1,45 @@
-import {Action} from 'redux';
+import {Dispatch} from 'redux';
+import {createAction, handleActions, Action} from 'redux-actions';
 
-const INCREMENT_NAME = 'counter/increment';
-const DECREMENT_NAME = 'counter/decrement';
+const INCREMENT_NAME: string = 'counter/increment';
+const DECREMENT_NAME: string = 'counter/decrement';
 
-type INCREMENT_TYPE = typeof INCREMENT_NAME;
-type DECREMENT_TYPE = typeof DECREMENT_NAME;
+export const increment = createAction<number, number>(INCREMENT_NAME, (num: number) => +num);
+export const decrement = createAction<number, number>(DECREMENT_NAME, (num: number) => -num);
 
-export interface IncrementAction extends Action {
-  type: INCREMENT_TYPE;
-  payload: number;
+export type CounterDispatchType = (num: number) => void;
+
+export function incrementAsync(num: number) {
+  return (dispatch: Dispatch<CounterDispatchType>) => {
+    setTimeout(
+      () => {
+        dispatch(increment(num));
+      }, 
+      2000);
+  };
 }
-export const incrementAmount = (amount: number): IncrementAction => ({
-  type: INCREMENT_NAME,
-  payload: amount
-});
 
-export interface DecrementAction extends Action {
-  type: DECREMENT_TYPE;
-  payload: number;
+export function decrementAsync(num: number) {
+  return (dispatch: Dispatch<CounterDispatchType>) => {
+    setTimeout(
+      () => {
+        dispatch(decrement(num));
+      }, 
+      2000);
+  };
 }
-
-export const decrementAmount = (amount: number): DecrementAction => ({
-  type: DECREMENT_NAME,
-  payload: amount
-});
 
 export interface CounterState {
   num: number;
 };
 
-export type CounterActions = IncrementAction | DecrementAction;
-
-const initialState: CounterState = {num: 0};
-
-import { handleActions } from 'redux-actions';
-
-export default handleActions<CounterState, CounterActions>({
-  INCREMENT_NAME: (state: CounterState, action: CounterActions) => {
-    return { num: state.num + action.payload };
+export default handleActions<CounterState, number>(
+  {
+    'counter/increment': (state: CounterState, action: Action<number>) => {
+      return action.payload ? { num: state.num + action.payload } : state;
+    },
+    'counter/decrement': (state: CounterState, action: Action<number>) => {
+      return action.payload ? { num: state.num - action.payload } : state;
+    }
   },
-  DECREMENT_NAME: (state: CounterState, action: CounterActions) => {
-    return { num: state.num - action.payload };
-  }
-}, initialState);
-
-export class ActionDispatcher {
-  constructor(private dispatch: (action: CounterActions) => void) {}
-
-  public increment(amount: number) {
-    this.dispatch(incrementAmount(amount));
-  }
-
-  public decrement(amount: number) {
-    this.dispatch(decrementAmount(amount));
-  }
-  public incrementAsync(amount: number) {
-    setTimeout(() => {
-      this.dispatch(incrementAmount(amount));
-    }, 2000);
-  }
-
-  public decrementAsync(amount: number) {
-    setTimeout(() => {
-      this.dispatch(decrementAmount(amount));
-    }, 2000);
-  }
-}
+  {num: 0});

@@ -1,9 +1,24 @@
-import Counter from './Counter';
+import Counter, {StateProps, DispatchProps} from './Counter';
 import {connect} from 'react-redux';
 import {Dispatch} from 'redux';
-import {CounterState, CounterActions, ActionDispatcher} from './module';
+import * as Module from './module';
+
+function mapStateToProps(state: Module.CounterState): StateProps {
+  return {
+    num: state.num
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<Module.CounterDispatchType>): DispatchProps {
+  return {
+    onIncrement: (num: number) => dispatch(Module.increment(num)),
+    onDecrement: (num: number) => dispatch(Module.decrement(num)),
+    onIncrementAsync: (num: number) => dispatch(Module.incrementAsync(num)),
+    onDecrementAsync: (num: number) => dispatch(Module.decrementAsync(num)),
+  };
+}
 
 export default connect(
-  (state: CounterState) => ({value: state}),
-  (dispatch: Dispatch<CounterActions>) => ({actions: new ActionDispatcher(dispatch)})
+  mapStateToProps,
+  mapDispatchToProps,
 )(Counter);

@@ -1,20 +1,27 @@
 import * as React from 'react';
-import {ActionDispatcher, CounterState} from './module';
 
-interface Props {
-  value: CounterState;
-  actions: ActionDispatcher;
+export interface StateProps {
+  num: number;
 }
 
-export default class Counter extends React.Component<Props, {}> {
+export type CounterDispatchType = (num: number) => void;
+
+export interface DispatchProps {
+    onIncrement: (num: number) => void;
+    onDecrement: (num: number) => void;
+    onIncrementAsync: (num: number) => void;
+    onDecrementAsync: (num: number) => void;
+}
+
+export default class Counter extends React.Component<StateProps & DispatchProps, {}> {
   render() {
     return (
       <div>
-        <p>score: {this.props.value.num}</p>
-        <button onClick={() => this.props.actions.increment(3)}>Increment 3</button>
-        <button onClick={() => this.props.actions.decrement(2)}>Decrement 2</button>
-        <button onClick={() => this.props.actions.incrementAsync(3)}>Increment 3 Async</button>
-        <button onClick={() => this.props.actions.decrementAsync(2)}>Decrement 2 Async</button>
+        <p>score: {this.props.num}</p>
+        <button onClick={() => this.props.onIncrement(3)}>Increment 3</button>
+        <button onClick={() => this.props.onDecrement(2)}>Decrement 2</button>
+        <button onClick={() => this.props.onIncrementAsync(3)}>Increment 3 Async</button>
+        <button onClick={() => this.props.onDecrementAsync(2)}>Decrement 2 Async</button>
       </div>
     );
   }
